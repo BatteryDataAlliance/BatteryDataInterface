@@ -1,0 +1,71 @@
+# Example YAML file for a 1000-cycle 1C/1C CCCV cycling experiment for a 5 Ah cell with an RPT every 100 cycles
+
+# Global parameters to take precedent over any cycling instructions
+
+globals:
+  # Units
+  V_unit: V
+  C_unit: A
+  T_unit: C
+  duration_unit: seconds
+
+  # Configs
+  V_min: 2.5
+  V_max: 4.2
+  T_ambient: 25 
+  T_max: 60
+
+# list of instructions to follow sequentially
+instructions:
+  # instructions composed from infinitely-nestable sequences
+  - sequence:
+      - sequence:
+          - type: current # current, voltage, power, duration, HPPC, CCCV, rest
+            value: 5 # A
+            time: 3600
+            termination:
+                  - type: voltage # current, voltage, power, duration, temperature
+                    value: 2.5
+                    name: optional
+                  - type: current
+                    value: 2.5
+                  - type: duration
+                    value: 2.5
+          - type: current
+            value: -5 # A
+            time: 3600
+            termination:
+                 - type: voltage
+                   value: 4.2
+          - type: voltage
+            value: 4.2
+            time: 7200
+            termination:
+                 - type: current
+                   value: 0.1
+          - type: rest
+            time: 3600
+        name: 1C/1C CCCV cycle
+        repeat: 100 # repeat this sequence 100 times before moving on to the next one
+      - sequence:
+          - type: current
+            value: 1 # A (C/5)
+            time: 3600
+            termination:
+               - type: voltage
+                 value: 2.5
+          - type: current
+            value: -1 # A (C/5)
+            time: 3600
+            termination:
+                  - type: voltage
+                    value: 4.2
+          - type: voltage
+            value: 4.2
+            time: 7200
+            termination:
+                  - type: current
+                    value: 0.1
+        name: C/5 RPT
+        repeat: 1 # or repeat defaults to 1 if not specified
+    repeat: 10 # repeat 100 cycles + 1 RPT 10 times
