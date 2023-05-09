@@ -1,6 +1,7 @@
 import yaml
 from modules.drivers.pymacnet import PyMacNet
 from modules.configurator import Configurator
+import pprint
 
 # Read the YAML file into a Python object
 with open("sampleConfig.yaml", "r") as file:
@@ -13,7 +14,7 @@ configurator = Configurator(sampleConfig, "maccor")
 
 maccor_driver = configurator.get_driver_config()
 
-print(maccor_driver.to_dict())
+pprint.pprint(maccor_driver.to_dict())
 
 
 

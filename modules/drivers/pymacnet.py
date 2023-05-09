@@ -2,7 +2,8 @@
 from modules.cyclerConfig import CyclerConfig
 from typing import List, Union, Optional, Dict, Any
 import json
-
+import pymacnet
+import sys
 class PyMacNetConfig:
     """
     The Config class represents the configuration object (Object 2) with default values.
@@ -92,6 +93,7 @@ class PyMacNet:
         self.pyMacNetConfig = pyMacNetConfig
         
     def convert(self, additional_properties: Optional[Dict[str, Any]] = None) -> PyMacNetConfig:
+        # TODO: we need to be able to pass the IP, Port, test name (we shouldn't default here)
         config = PyMacNetConfig()
 
         # Map the global parameters from Object 1 to Object 2
@@ -105,3 +107,23 @@ class PyMacNet:
                     setattr(config, key, value)
 
         return config
+
+
+    def run_test(self, config: PyMacNetConfig):
+        """One shot test
+        """
+        maccor_interface = pymacnet.MaccorInterface(config.to_dict())
+        if not maccor_interface.start():
+            sys.exit("failed to create connection!")
+
+        if maccor_interface.start_test_with_procedure():
+            print("Test started!")
+
+    def direct_control(self):
+        """Configure on the fly
+        """
+
+    def read_signals(self):
+        """Read signals: Limitations: 1Hz
+        """
+        pass
